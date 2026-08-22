@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>Happy Birthday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Dancing+Script:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ======================================================
+   ROOT / RESET
+====================================================== */
+:root{
+  --navy:#071A3D;
+  --blue:#0B2A5B;
+  --deep-blue:#061735;
+  --cream:#F5F3EA;
+  --paper:#F8F7F1;
+  --white:#FFFFFF;
+  --soft-blue:#C9DDF5;
+  --soft-blue-2:#9FC0EA;
+  --text:#13284B;
+  --ink:#20304f;
+  --transition-speed:.75s;
+}
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Cormorant Garamond',serif;
+  color:var(--text);
+  background:var(--navy);
+  overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+img{max-width:100%;display:block;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+h1,h2,h3,p{margin:0;}
+.hidden-audio{display:none;}
+::selection{background:var(--soft-blue);color:var(--navy);}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+}
+
+/* ======================================================
+   TEXTURES & BACKGROUND
+====================================================== */
+.navy-bg{
+  position:relative;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(150,180,230,0.10), transparent 55%),
+    radial-gradient(ellipse at 85% 100%, rgba(120,160,220,0.10), transparent 55%),
+    linear-gradient(160deg, var(--deep-blue) 0%, var(--navy) 45%, var(--blue) 100%);
+}
+.navy-bg::before{
+  content:"";
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  opacity:.05;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+}
+.paper-bg{
+  background:var(--paper);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-blend-mode:multiply;
+}
+
+/* Lace scallop strip */
+.lace{
+  position:absolute;
+  left:0;right:0;bottom:0;
+  height:22px;
+  background:
+    radial-gradient(circle at 11px 0, transparent 10px, rgba(255,255,255,.85) 11px) 0 0/22px 22px repeat-x;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));
+  pointer-events:none;
+}
+.lace::after{
+  content:"";
+  position:absolute;left:0;right:0;top:9px;height:13px;
+  background:rgba(255,255,255,.85);
+}
+
+/* ======================================================
+   APP / PAGE SYSTEM
+====================================================== */
+#app{
+  position:relative;
+  min-height:100vh;
+  width:100%;
+  overflow-x:hidden;
+}
+.page{
+  position:absolute;
+  top:0;left:0;right:0;
+  min-height:100vh;
+  width:100%;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:34px 18px 54px;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(22px) scale(.985);
+  transition:opacity var(--transition-speed) cubic-bezier(.22,.61,.36,1),
+             transform var(--transition-speed) cubic-bezier(.22,.61,.36,1);
+  z-index:1;
+}
+.page.active{
+  display:flex;
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0) scale(1);
+  transition:opacity var(--transition-speed) cubic-bezier(.22,.61,.36,1),
+             transform var(--transition-speed) cubic-bezier(.22,.61,.36,1);
+  z-index:2;
+}
+
+/* ======================================================
+   TYPOGRAPHY HELPERS
+====================================================== */
+.font-display{font-family:'Playfair Display',serif;}
+.font-script{font-family:'Dancing Script',cursive;}
+.font-ui{font-family:'Poppins',sans-serif;}
+
+.heading-xl{
+  font-family:'Playfair Display',serif;
+  font-weight:800;
+  color:var(--white);
+  font-size:clamp(2.4rem,9vw,4.6rem);
+  line-height:1.05;
+  letter-spacing:.5px;
+  text-shadow:0 4px 24px rgba(0,0,0,.35);
+}
+.subtitle-script{
+  font-family:'Dancing Script',cursive;
+  color:var(--soft-blue);
+  font-size:clamp(1.15rem,4vw,1.6rem);
+  font-weight:600;
+}
+
+/* ======================================================
+   BUTTONS
+====================================================== */
+.btn{
+  font-family:'Poppins',sans-serif;
+  font-size:.92rem;
+  font-weight:500;
+  letter-spacing:.3px;
+  padding:13px 30px;
+  border-radius:999px;
+  background:var(--white);
+  color:var(--navy);
+  box-shadow:0 8px 22px rgba(3,12,35,.35);
+  transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(3,12,35,.4);}
+.btn:active{transform:translateY(0) scale(.96);}
+.btn-outline{
+  background:transparent;
+  color:var(--white);
+  border:1.5px solid rgba(255,255,255,.55);
+  box-shadow:none;
+}
+.btn-soft{background:var(--soft-blue);color:var(--navy);}
+.btn-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:22px;}
+.btn:focus-visible{outline:2px solid var(--soft-blue);outline-offset:3px;}
+
+/* ======================================================
+   DECORATIONS (hearts / stars / butterfly / plane)
+====================================================== */
+.deco{position:absolute;pointer-events:none;opacity:.9;}
+.deco svg{display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));}
+
+@keyframes floatY{
+  0%,100%{transform:translateY(0) rotate(var(--r,0deg));}
+  50%{transform:translateY(-14px) rotate(var(--r,0deg));}
+}
+@keyframes floatSlow{
+  0%,100%{transform:translate(0,0) rotate(var(--r,0deg));}
+  50%{transform:translate(6px,-10px) rotate(calc(var(--r,0deg) + 4deg));}
+}
+.float-anim{animation:floatY 4.5s ease-in-out infinite;will-change:transform;}
+.float-anim-slow{animation:floatSlow 6s ease-in-out infinite;will-change:transform;}
+
+@keyframes twinkle{
+  0%,100%{opacity:.4;transform:scale(.85);}
+  50%{opacity:1;transform:scale(1.05);}
+}
+.twinkle{animation:twinkle 2.6s ease-in-out infinite;will-change:opacity,transform;}
+
+@keyframes planeDrift{
+  0%{transform:translate(0,0) rotate(-8deg);}
+  50%{transform:translate(14px,-10px) rotate(-4deg);}
+  100%{transform:translate(0,0) rotate(-8deg);}
+}
+.plane-anim{animation:planeDrift 5s ease-in-out infinite;will-change:transform;}
+
+/* ======================================================
+   PAGE 1 — COVER
+====================================================== */
+#page1{padding-bottom:70px;}
+.cover-wrap{
+  width:100%;
+  max-width:1080px;
+  display:flex;
+  flex-direction:column;
+  gap:34px;
+  position:relative;
+  z-index:2;
+}
+.cover-left{text-align:left;max-width:520px;}
+.cover-left .btn{margin-top:20px;}
+.cover-right{
+  position:relative;
+  min-height:260px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+@media(min-width:860px){
+  .cover-wrap{flex-direction:row;align-items:center;justify-content:space-between;}
+  .cover-right{min-height:340px;flex:1;}
+  .cover-left{flex:1;}
+}
+
+/* heart photo frame */
+.heart-frame{
+  width:clamp(140px,26vw,190px);
+  aspect-ratio:1/.95;
+  clip-path:polygon(50% 15%,61% 3%,75% 0%,86% 3%,95% 12%,99% 24%,99% 35%,94% 47%,84% 60%,70% 74%,50% 92%,30% 74%,16% 60%,6% 47%,1% 35%,1% 24%,5% 12%,14% 3%,25% 0%,39% 3%);
+  background:var(--soft-blue) center/cover;
+  box-shadow:0 10px 24px rgba(0,0,0,.35);
+  position:absolute;
+  right:8%;
+  top:-6%;
+  z-index:4;
+}
+.heart-frame img{width:100%;height:100%;object-fit:cover;}
+
+/* envelope */
+.envelope{
+  position:relative;
+  width:min(78vw,300px);
+  height:190px;
+  align-self:flex-end;
+}
+.envelope-body{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,var(--soft-blue),var(--white));
+  border-radius:6px;
+  box-shadow:0 14px 30px rgba(0,0,0,.4);
+  overflow:hidden;
+}
+.envelope-flap{
+  position:absolute;top:0;left:0;right:0;height:60%;
+  background:linear-gradient(160deg,#e6eefb,var(--white));
+  clip-path:polygon(0 0,100% 0,50% 78%);
+  box-shadow:inset 0 -6px 10px -6px rgba(0,0,0,.15);
+}
+.envelope-label{
+  position:absolute;left:0;right:0;bottom:16px;text-align:center;
+  font-family:'Dancing Script',cursive;
+  color:var(--navy);
+  font-size:1.35rem;
+  z-index:2;
+}
+.envelope-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-size:.85rem;
+  color:#4a5d82;
+  display:block;
+  margin-top:2px;
+}
+
+/* ======================================================
+   CARD (used by page2/3/letter etc.)
+====================================================== */
+.card{
+  background:var(--paper);
+  border-radius:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  position:relative;
+  width:100%;
+  max-width:760px;
+  padding:34px 20px;
+}
+.torn-top::before{
+  content:"";
+  position:absolute;left:0;right:0;top:-9px;height:14px;
+  background:
+    linear-gradient(135deg,transparent 50%,var(--paper) 50%) 0 0/16px 16px repeat-x,
+    linear-gradient(-135deg,transparent 50%,var(--paper) 50%) 8px 0/16px 16px repeat-x;
+}
+
+/* ======================================================
+   PAGE 2 & 3 shared
+====================================================== */
+.q-title{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-weight:600;
+  color:var(--white);
+  font-size:clamp(1.05rem,3.4vw,1.4rem);
+  text-align:center;
+  margin-top:26px;
+}
+.page-inner{
+  width:100%;
+  max-width:820px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  position:relative;
+  z-index:2;
+}
+
+/* road */
+.road-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:700/230;
+}
+.road-wrap svg{width:100%;height:100%;display:block;}
+.road-photo{
+  position:absolute;
+  width:19%;
+  aspect-ratio:1/1;
+  border-radius:50%;
+  border:4px solid var(--white);
+  box-shadow:0 8px 20px rgba(0,0,0,.35);
+  background:var(--soft-blue) center/cover;
+  transform:translate(-50%,-50%);
+  overflow:hidden;
+}
+.road-photo img{width:100%;height:100%;object-fit:cover;}
+.road-photo.moving{z-index:5;transition:none;}
+
+.butterfly-deco{position:absolute;width:34px;}
+
+/* ======================================================
+   PAGE 3 — sad
+====================================================== */
+.sad-png-wrap{
+  position:relative;
+  margin-bottom:-34px;
+  z-index:5;
+}
+.sad-png{
+  width:110px;
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.4));
+}
+@keyframes sadBounce{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-8px);}
+}
+.sad-bounce{animation:sadBounce 2.4s ease-in-out infinite;}
+.broken-heart{
+  position:absolute;top:-6px;right:-4px;font-size:1.4rem;
+  animation:floatY 2.2s ease-in-out infinite;
+}
+.card-sad{text-align:center;padding-top:52px;}
+.sad-heading{
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  color:var(--navy);
+  font-size:clamp(1.8rem,6vw,2.6rem);
+}
+
+/* ======================================================
+   PAGE 4 — GIFT MENU
+====================================================== */
+.menu-title{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  color:var(--white);
+  font-size:clamp(1.1rem,3.6vw,1.5rem);
+  text-align:center;
+  margin-bottom:28px;
+}
+.stamp-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+  width:100%;
+  max-width:520px;
+}
+@media(min-width:760px){
+  .stamp-grid{grid-template-columns:repeat(4,1fr);max-width:760px;}
+}
+.stamp{
+  background:var(--cream);
+  border:2.5px dashed rgba(19,40,75,.3);
+  border-radius:12px;
+  padding:20px 12px 16px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  box-shadow:0 10px 22px rgba(0,0,0,.25);
+  transform:rotate(var(--rot,0deg));
+  transition:transform .25s ease, box-shadow .25s ease;
+  position:relative;
+}
+.stamp:nth-child(1){--rot:-3deg;}
+.stamp:nth-child(2){--rot:2deg;}
+.stamp:nth-child(3){--rot:-2deg;}
+.stamp:nth-child(4){--rot:3deg;}
+.stamp:hover{transform:rotate(0deg) translateY(-4px) scale(1.03);box-shadow:0 14px 28px rgba(0,0,0,.3);}
+.stamp:active{transform:scale(.96);}
+.stamp-icon{width:42px;height:42px;color:var(--navy);}
+.stamp-label{font-family:'Poppins',sans-serif;font-size:.82rem;color:var(--navy);font-weight:500;}
+.stamp.opened{box-shadow:0 0 0 2px var(--soft-blue),0 10px 22px rgba(0,0,0,.25);}
+.stamp-check{
+  position:absolute;top:-8px;right:-8px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--navy);color:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-family:'Poppins',sans-serif;
+  opacity:0;transform:scale(0);
+  transition:opacity .3s ease,transform .3s ease;
+}
+.stamp.opened .stamp-check{opacity:1;transform:scale(1);}
+
+.next-wrap{
+  margin-top:36px;
+  opacity:0;
+  transform:translateY(18px);
+  transition:opacity .6s ease, transform .6s ease;
+  pointer-events:none;
+  height:0;
+  overflow:hidden;
+}
+.next-wrap.show{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+  height:auto;
+}
+
+/* ======================================================
+   SUBPAGE SHARED
+====================================================== */
+.subpage-card{max-width:640px;}
+.back-btn{margin-top:26px;}
+
+/* ======================================================
+   LETTER — envelope & handwritten paper
+====================================================== */
+.letter-stage{
+  position:relative;
+  width:100%;
+  max-width:640px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding-top:34px;
+}
+.envelope-back{
+  position:absolute;
+  top:-6px;left:50%;
+  transform:translateX(-50%);
+  width:88%;
+  max-width:520px;
+  z-index:1;
+  filter:drop-shadow(0 10px 18px rgba(0,0,0,.3));
+}
+.letter-card{
+  position:relative;
+  z-index:2;
+  transform:rotate(-1deg);
+  padding:44px 24px 34px;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,transparent 37px,
+      rgba(19,40,75,.09) 37px,rgba(19,40,75,.09) 38px
+    ),
+    var(--paper);
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,transparent 37px,
+      rgba(19,40,75,.09) 37px,rgba(19,40,75,.09) 38px
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-blend-mode:normal,multiply;
+  background-color:var(--paper);
+}
+.letter-card.torn-bottom::after{
+  content:"";
+  position:absolute;left:0;right:0;bottom:-9px;height:14px;
+  background:
+    linear-gradient(45deg,transparent 50%,var(--paper) 50%) 0 100%/16px 16px repeat-x,
+    linear-gradient(-45deg,transparent 50%,var(--paper) 50%) 8px 100%/16px 16px repeat-x;
+}
+.wax-seal{
+  position:absolute;top:-26px;left:50%;
+  transform:translateX(-50%) rotate(-6deg);
+  width:56px;height:56px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#3a5da3,var(--navy) 70%);
+  box-shadow:0 8px 16px rgba(0,0,0,.4),inset 0 -3px 6px rgba(0,0,0,.35),inset 0 3px 5px rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  z-index:3;
+}
+.wax-seal svg{width:24px;height:24px;color:var(--soft-blue);}
+.letter-top{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  font-family:'Poppins',sans-serif;
+  font-size:.72rem;
+  letter-spacing:.6px;
+  text-transform:uppercase;
+  color:#7c8bab;
+  margin-bottom:6px;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.letter-title{
+  font-family:'Playfair Display',serif;
+  font-weight:700;
+  color:var(--navy);
+  font-size:clamp(1.3rem,4.4vw,1.8rem);
+  margin-bottom:4px;
+}
+.letter-divider{
+  display:flex;align-items:center;gap:10px;
+  margin:8px 0 20px;
+}
+.letter-divider span{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(19,40,75,.3),transparent);}
+.letter-divider svg{width:14px;height:14px;color:var(--navy);opacity:.6;flex-shrink:0;}
+.letter-body{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.02rem,2.8vw,1.18rem);
+  line-height:1.85;
+  color:var(--ink);
+  white-space:pre-wrap;
+}
+.letter-body p{margin-bottom:16px;}
+.letter-body p:first-of-type::first-letter{
+  font-family:'Playfair Display',serif;
+  font-weight:800;
+  font-size:2.6em;
+  float:left;
+  line-height:.82;
+  padding:.03em .07em 0 0;
+  color:var(--navy);
+}
+.letter-closing{margin-top:6px;font-style:italic;color:var(--navy);}
+.letter-signature-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.letter-signature{font-family:'Dancing Script',cursive;font-size:1.5rem;color:var(--navy);}
+.letter-signature-row svg{width:16px;height:16px;color:var(--navy);opacity:.7;}
+.caret{
+  display:inline-block;width:2px;height:1em;background:var(--navy);
+  margin-left:1px;vertical-align:-2px;
+  animation:blink 1s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+.letter-deco{position:absolute;pointer-events:none;z-index:1;opacity:.85;}
+.letter-deco.ld1{top:6%;left:-2%;width:30px;color:var(--soft-blue);opacity:.85;}
+.letter-deco.ld2{bottom:8%;right:-3%;width:26px;color:var(--soft-blue-2);opacity:.85;}
+.letter-deco.ld3{top:38%;right:-4%;width:20px;color:var(--soft-blue);opacity:.7;}
+
+@media(max-width:480px){
+  .wax-seal{width:46px;height:46px;top:-20px;}
+  .wax-seal svg{width:20px;height:20px;}
+  .letter-card{padding:38px 18px 28px;}
+}
+
+
+/* ======================================================
+   PHOTOS — 2 kiri, 1 kanan
+====================================================== */
+.photos-card{display:none;}
+
+.photos-scrap{
+  position:relative;
+  width:100%;
+  max-width:900px;
+  min-height:clamp(460px,86vw,560px);
+  border-radius:22px;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 20% 10%,rgba(120,155,215,.3),transparent 55%),
+    linear-gradient(160deg,#0c1f45 0%,#0a1a3a 45%,#122a55 100%);
+  box-shadow:0 30px 60px rgba(0,0,0,.5);
+  contain:layout style paint;
+  transform:translateZ(0);
+}
+
+/* ---- corner polaroids ---- */
+.photo-corner{
+  position:absolute;
+  width:clamp(96px,22vw,160px);
+  background:var(--white);
+  padding:7px 7px 22px;
+  box-shadow:0 12px 24px rgba(0,0,0,.35);
+  opacity:0;
+  transition:opacity .7s ease, transform .7s ease;
+  z-index:2;
+}
+.photo-corner img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--soft-blue);}
+.photo-corner.show{opacity:1;}
+.corner-tl{top:6%;left:5%;transform:rotate(-8deg) translateY(-16px);}
+.corner-tl.show{transform:rotate(-8deg) translateY(0);}
+.corner-bl{top:47%;left:9%;transform:rotate(6deg) translateY(16px);}
+.corner-bl.show{transform:rotate(6deg) translateY(0);}
+.corner-tr{top:7%;right:5%;transform:rotate(6deg) translateY(-16px);}
+.corner-tr.show{transform:rotate(6deg) translateY(0);}
+.corner-br{top:46%;right:6%;transform:rotate(-5deg) translateY(16px);}
+.corner-br.show{transform:rotate(-5deg) translateY(0);}
+.corner-sparkle{
+  position:absolute;bottom:-8px;right:-8px;width:16px;height:16px;
+  color:var(--soft-blue);opacity:.9;
+}
+
+/* ---- hanging clip + strip in the middle ---- */
+.photos-hanger-wrap{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:clamp(140px,26vw,190px);
+  z-index:4;
+  display:flex;flex-direction:column;align-items:center;
+}
+.hanger-clip{
+  width:100%;height:26px;
+  background:linear-gradient(180deg,#e9e4d8,#d9d3c4);
+  border-radius:8px;
+  box-shadow:0 6px 14px rgba(0,0,0,.35);
+  position:relative;
+  z-index:2;
+}
+.hanger-bow{position:absolute;top:-10px;width:26px;height:26px;color:#1b1b1b;}
+.hanger-bow.left{left:6%;}
+.hanger-bow.right{right:6%;}
+.photos-strip{
+  width:88%;
+  background:var(--white);
+  padding:8px 8px 12px;
+  box-shadow:0 14px 26px rgba(0,0,0,.35);
+  display:flex;flex-direction:column;gap:6px;
+  margin-top:-3px;
+}
+.strip-slot{
+  width:100%;aspect-ratio:4/3;
+  overflow:hidden;
+  background:var(--soft-blue);
+  opacity:0;
+  transform:translateY(-40px);
+  transition:opacity .55s cubic-bezier(.2,.8,.3,1.3), transform .55s cubic-bezier(.2,.8,.3,1.3);
+}
+.strip-slot.show{opacity:1;transform:translateY(0);}
+.strip-slot img{width:100%;height:100%;object-fit:cover;}
+
+/* ---- decorations ---- */
+.photos-deco{position:absolute;pointer-events:none;z-index:3;}
+.photos-deco.deco-hearts-tl,.photos-deco.deco-hearts-tr{opacity:.92;}
+.deco-hearts-tl{top:4%;left:3%;width:56px;color:var(--soft-blue);}
+.deco-hearts-tr{top:4%;right:3%;width:56px;color:var(--soft-blue);}
+.deco-star-bl{bottom:24%;left:2%;width:34px;color:var(--soft-blue-2);}
+.deco-star-r{top:44%;right:1%;width:30px;color:var(--soft-blue-2);}
+.deco-camera{
+  position:absolute;bottom:2%;left:1%;width:clamp(70px,16vw,110px);
+  color:#dfe7f5;z-index:3;
+}
+.deco-camera-bow{position:absolute;top:-14px;left:8px;width:26px;height:26px;color:var(--white);}
+.deco-flowers{
+  position:absolute;bottom:0;right:0;width:clamp(90px,20vw,140px);
+  z-index:3;
+}
+.deco-bubble{
+  position:absolute;bottom:6%;right:4%;z-index:5;
+  background:rgba(230,236,248,.95);
+  color:var(--navy);
+  font-family:'Poppins',sans-serif;font-size:.78rem;font-weight:500;
+  padding:9px 16px;border-radius:999px;
+  box-shadow:0 10px 20px rgba(0,0,0,.3);
+}
+.deco-bubble::after{
+  content:"";position:absolute;bottom:-6px;left:20px;
+  width:12px;height:12px;background:rgba(230,236,248,.95);
+  clip-path:polygon(0 0,100% 0,0 100%);
+}
+
+.photos-back-row{margin-top:24px;text-align:center;position:relative;z-index:5;}
+
+@media(max-width:640px){
+  .photo-corner{width:26vw;}
+  .photos-hanger-wrap{width:34vw;}
+  .deco-hearts-tl,.deco-hearts-tr{width:38px;}
+  .deco-flowers{width:80px;}
+  .deco-camera{width:70px;}
+}
+
+/* ======================================================
+   GIFT
+====================================================== */
+.gift-card{text-align:center;}
+.gift-title{
+  font-family:'Playfair Display',serif;
+  font-weight:700;color:var(--navy);
+  font-size:clamp(1.5rem,5vw,2.2rem);
+  margin-bottom:18px;
+}
+.gift-img-wrap{position:relative;display:inline-block;}
+.gift-img{
+  width:min(70vw,260px);
+  animation:floatY 3.6s ease-in-out infinite;
+  filter:drop-shadow(0 16px 22px rgba(0,0,0,.3));
+}
+.sparkle{position:absolute;font-size:1.1rem;animation:twinkle 2s ease-in-out infinite;}
+
+/* ======================================================
+   MUSIC — "About You" scrapbook layout
+====================================================== */
+#music .page-inner{width:100%;max-width:1100px;padding:0;}
+.music-stage{
+  position:relative;
+  width:100%;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.music-scrap{
+  position:relative;
+  width:100%;
+  max-width:980px;
+  min-height:520px;
+  border-radius:26px;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 25% 15%,rgba(120,155,215,.35),transparent 55%),
+    linear-gradient(135deg,#0c1f45 0%,#0a1a3a 45%,#122a55 100%);
+  box-shadow:0 30px 60px rgba(0,0,0,.5);
+  padding:34px 26px 30px;
+}
+/* torn denim strip on the left */
+.music-scrap::before{
+  content:"";
+  position:absolute;top:0;left:0;bottom:0;width:34%;
+  background:
+    repeating-linear-gradient(115deg,rgba(255,255,255,.05) 0 2px,transparent 2px 26px),
+    linear-gradient(160deg,#22345f 0%,#16244a 60%,#0d1a38 100%);
+  clip-path:polygon(0 0,100% 0,86% 8%,100% 16%,82% 24%,100% 33%,88% 42%,100% 52%,84% 61%,100% 70%,90% 80%,100% 90%,84% 100%,0 100%);
+  opacity:.9;
+}
+.music-top-row{
+  position:relative;z-index:3;
+  display:flex;justify-content:flex-end;
+  margin-bottom:6px;
+}
+.music-next-btn{
+  font-family:'Poppins',sans-serif;font-size:.82rem;font-weight:500;
+  padding:9px 22px;border-radius:999px;
+  background:rgba(255,255,255,.92);color:var(--navy);
+  box-shadow:0 8px 18px rgba(0,0,0,.3);
+}
+
+/* vinyl on the left, half-cropped */
+.music-vinyl-zone{
+  position:absolute;left:-8%;top:50%;transform:translateY(-50%);
+  width:min(46vw,300px);z-index:2;
+}
+.vinyl-wrap{
+  position:relative;width:100%;aspect-ratio:1/1;
+}
+.vinyl{
+  width:100%;height:100%;border-radius:50%;
+  background:
+    repeating-radial-gradient(circle at center,#101010 0 2px,#1c1c1c 2px 4px);
+  box-shadow:0 20px 40px rgba(0,0,0,.5);
+  position:relative;
+  animation:spin 6s linear infinite;
+  animation-play-state:paused;
+  will-change:transform;
+}
+.vinyl.spinning{animation-play-state:running;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.vinyl-center{
+  position:absolute;top:50%;left:50%;
+  width:40%;height:40%;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:var(--soft-blue);
+  border:3px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+}
+.vinyl-center-heart{width:44%;height:44%;color:var(--navy);opacity:.85;}
+.vinyl-hole{
+  position:absolute;top:50%;left:50%;width:10px;height:10px;
+  background:#0c1f45;border-radius:50%;transform:translate(-50%,-50%);
+}
+/* floral accents on the vinyl */
+.vinyl-flower{position:absolute;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));}
+.vinyl-flower.f1{top:-8%;right:-6%;width:34%;}
+.vinyl-flower.f2{bottom:2%;left:-4%;width:26%;}
+
+/* love definition scrap tag */
+.love-tag{
+  position:absolute;left:6%;bottom:9%;z-index:2;
+  background:var(--cream);
+  padding:10px 14px 10px 12px;
+  max-width:150px;
+  box-shadow:0 10px 20px rgba(0,0,0,.3);
+  transform:rotate(-4deg);
+  font-family:'Cormorant Garamond',serif;
+}
+.love-tag .word{font-family:'Dancing Script',cursive;font-size:1.3rem;color:var(--navy);display:block;text-decoration:underline;text-underline-offset:3px;}
+.love-tag .def{font-size:.68rem;line-height:1.35;color:#5a6c8e;display:block;margin-top:2px;}
+
+/* polaroid photo, right side */
+.music-photo-zone{
+  position:relative;z-index:3;
+  margin-left:auto;
+  width:min(52vw,300px);
+  background:var(--cream);
+  padding:10px 10px 44px;
+  box-shadow:0 20px 34px rgba(0,0,0,.4);
+  transform:rotate(2deg);
+}
+.music-photo-zone img{width:100%;aspect-ratio:4/5;object-fit:cover;background:var(--soft-blue);}
+.music-photo-flower{
+  position:absolute;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.3));
+}
+.music-photo-flower.pf1{top:-14%;right:10%;width:22%;}
+.music-photo-flower.pf2{bottom:12%;right:-10%;width:20%;}
+
+/* floating decorations */
+.music-deco{position:absolute;pointer-events:none;z-index:4;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3));}
+.music-deco.note1{top:14%;right:8%;width:30px;color:var(--soft-blue);}
+.music-deco.note2{top:34%;right:2%;width:22px;color:var(--soft-blue);}
+.music-deco.kiss{top:52%;right:6%;width:36px;color:#e6d4e0;}
+.music-deco.star{bottom:18%;right:20%;width:34px;color:var(--soft-blue-2);}
+
+/* title */
+.music-title-zone{
+  position:absolute;left:8%;bottom:8%;z-index:3;
+}
+.about-title{
+  font-family:'Playfair Display',serif;font-weight:700;
+  color:var(--white);font-size:clamp(1.6rem,4.2vw,2.4rem);
+  text-shadow:0 4px 16px rgba(0,0,0,.4);
+}
+
+/* waveform player pill */
+.music-player-zone{
+  position:absolute;right:6%;bottom:9%;z-index:5;
+  display:flex;align-items:center;gap:12px;
+  background:rgba(230,236,248,.92);
+  border-radius:999px;
+  padding:10px 18px 10px 10px;
+  box-shadow:0 12px 26px rgba(0,0,0,.35);
+  max-width:min(60vw,320px);
+}
+.player-play-btn{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--navy);color:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:.85rem;
+  transition:transform .2s ease;
+}
+.player-play-btn:active{transform:scale(.9);}
+.waveform{
+  display:flex;align-items:center;gap:2px;height:20px;flex:1;overflow:hidden;
+}
+.waveform span{
+  width:2.5px;border-radius:2px;background:#3a4a72;
+  height:var(--h,6px);
+  animation:eqBar 1.1s ease-in-out infinite;
+  animation-play-state:paused;
+}
+.waveform.playing span{animation-play-state:running;}
+@keyframes eqBar{0%,100%{transform:scaleY(.5);}50%{transform:scaleY(1);}}
+
+.song-title,.song-artist{display:none;}
+.music-controls{display:none;}
+.eq.legacy-eq{display:none;}
+.music-embed-wrap{position:absolute;bottom:-2px;left:0;right:0;margin:0;max-width:none;opacity:0;height:1px;overflow:hidden;}
+.music-note{
+  position:absolute;left:8%;bottom:2%;z-index:3;
+  font-family:'Poppins',sans-serif;font-size:.7rem;color:var(--soft-blue);
+  max-width:200px;
+}
+.music-back-row{position:relative;z-index:5;margin-top:18px;text-align:center;}
+
+@media(max-width:640px){
+  .music-scrap{padding:24px 16px 22px;min-height:640px;}
+  .music-vinyl-zone{left:-14%;width:60vw;}
+  .music-photo-zone{width:58vw;margin-left:auto;margin-right:2%;}
+  .music-player-zone{left:6%;right:6%;bottom:6%;max-width:none;}
+  .music-title-zone{bottom:24%;}
+  .love-tag{display:none;}
+}
+
+/* ======================================================
+   PAGE 5 — FINAL
+====================================================== */
+#page5{text-align:center;}
+.final-title{
+  opacity:0;transform:translateY(16px);
+  animation:finalIn 1.1s ease forwards .3s;
+}
+.final-sub{
+  opacity:0;transform:translateY(16px);
+  animation:finalIn 1.1s ease forwards 1.1s;
+  margin-top:14px;
+}
+@keyframes finalIn{to{opacity:1;transform:translateY(0);}}
+
+/* ======================================================
+   MISC SMALL UI
+====================================================== */
+.stars-row{display:flex;gap:8px;justify-content:center;}
+.img-fallback{filter:grayscale(.2);}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+</style>
+</head>
+<body>
+
+<main id="app">
+
+  <!-- ============================================================
+       PAGE 1 — COVER
+  ============================================================ -->
+  <section class="page navy-bg active" id="page1" aria-label="Cover">
+    <div class="deco float-anim-slow plane-anim" style="top:6%;left:6%;--r:-8deg;">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12L21 3L14 21L11 13L2 12Z" fill="#F5F3EA" stroke="#C9DDF5" stroke-width="1"/></svg>
+    </div>
+    <div class="deco twinkle" style="top:8%;right:10%;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#C9DDF5"><path d="M12 0l2.9 8.2L23 12l-8.1 2.9L12 24l-2.9-9.1L1 12l8.1-2.8z"/></svg>
+    </div>
+    <div class="deco twinkle" style="top:16%;right:4%;animation-delay:.6s;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9DDF5"><path d="M12 0l2.9 8.2L23 12l-8.1 2.9L12 24l-2.9-9.1L1 12l8.1-2.8z"/></svg>
+    </div>
+
+    <div class="cover-wrap">
+      <div class="cover-left">
+        <h1 class="heading-xl" id="p1Title">Happy<br>Birthday</h1>
+        <p class="subtitle-script" id="p1Subtitle">Special gift for special person</p>
+        <button class="btn" id="openGiftBtn">Open The Gift</button>
+      </div>
+
+      <div class="cover-right">
+        <div class="heart-frame" id="page1LoveFrame">
+          <img id="page1LovePhotoImg" src="" loading="lazy" decoding="async" alt="Foto kenangan">
+        </div>
+        <div class="deco float-anim" style="position:absolute;right:2%;bottom:38%;--r:0deg;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#9FC0EA"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.9 2 6 5.4 5.1 7.6 4.5 9.8 5.5 12 8c2.2-2.5 4.4-3.5 6.6-2.9C22 6 23.2 9.9 21.3 12.9 18.7 16.65 12 21 12 21z"/></svg>
+        </div>
+        <div class="envelope">
+          <div class="envelope-body">
+            <div class="envelope-flap"></div>
+            <span class="envelope-label" id="p1EnvelopeText">Birthday Boy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lace"></div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 2 — ROAD ANIMATION
+  ============================================================ -->
+  <section class="page navy-bg" id="page2" aria-label="Perjalanan hadiah">
+    <div class="deco twinkle" style="top:4%;left:8%;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#9FC0EA"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.9 2 6 5.4 5.1 7.6 4.5 9.8 5.5 12 8c2.2-2.5 4.4-3.5 6.6-2.9C22 6 23.2 9.9 21.3 12.9 18.7 16.65 12 21 12 21z"/></svg></div>
+    <div class="deco float-anim" style="top:3%;left:50%;"><svg width="20" height="20" viewBox="0 0 24 24" fill="#C9DDF5"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.9 2 6 5.4 5.1 7.6 4.5 9.8 5.5 12 8c2.2-2.5 4.4-3.5 6.6-2.9C22 6 23.2 9.9 21.3 12.9 18.7 16.65 12 21 12 21z"/></svg></div>
+    <div class="deco twinkle" style="top:5%;right:8%;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#9FC0EA"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.9 2 6 5.4 5.1 7.6 4.5 9.8 5.5 12 8c2.2-2.5 4.4-3.5 6.6-2.9C22 6 23.2 9.9 21.3 12.9 18.7 16.65 12 21 12 21z"/></svg></div>
+
+    <div class="page-inner">
+      <div class="card">
+        <div class="road-wrap" id="roadWrap2">
+          <svg viewBox="0 0 700 230" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <path d="M60,170 C150,170 150,70 240,70 C330,70 330,170 420,170 C510,170 510,70 600,70" fill="none" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
+            <path id="roadPath2" d="M60,170 C150,170 150,70 240,70 C330,70 330,170 420,170 C510,170 510,70 600,70" fill="none" stroke="#2c2c2c" stroke-width="19" stroke-linecap="round"/>
+            <path d="M60,170 C150,170 150,70 240,70 C330,70 330,170 420,170 C510,170 510,70 600,70" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="10 12" opacity=".85"/>
+          </svg>
+          <div class="road-photo" id="road2Left" style="left:8.57%;top:73.9%;">
+            <img id="road2LeftImg" src="" loading="lazy" decoding="async" alt="Foto kiri">
+          </div>
+          <div class="road-photo" id="road2Right" style="left:85.7%;top:30.4%;">
+            <img id="road2RightImg" src="" loading="lazy" decoding="async" alt="Foto kanan">
+          </div>
+          <img class="butterfly-deco float-anim" id="butterfly2a" style="left:4%;top:40%;" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='%239FC0EA'%3E%3Cpath d='M32 30c-6-14-24-18-26-8-2 9 12 14 26 12'/%3E%3Cpath d='M32 30c6-14 24-18 26-8 2 9-12 14-26 12'/%3E%3Cpath d='M32 30c-4 10-16 14-18 6-2-7 8-11 18-10'/%3E%3Cpath d='M32 30c4 10 16 14 18 6 2-7-8-11-18-10'/%3E%3C/g%3E%3Crect x='30.5' y='24' width='3' height='20' rx='1.5' fill='%2313284B'/%3E%3C/svg%3E" alt="">
+          <img class="butterfly-deco float-anim-slow" id="butterfly2b" style="right:6%;top:14%;" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cg fill='%23C9DDF5'%3E%3Cpath d='M32 30c-6-14-24-18-26-8-2 9 12 14 26 12'/%3E%3Cpath d='M32 30c6-14 24-18 26-8 2 9-12 14-26 12'/%3E%3Cpath d='M32 30c-4 10-16 14-18 6-2-7 8-11 18-10'/%3E%3Cpath d='M32 30c4 10 16 14 18 6 2-7-8-11-18-10'/%3E%3C/g%3E%3Crect x='30.5' y='24' width='3' height='20' rx='1.5' fill='%2313284B'/%3E%3C/svg%3E" alt="">
+        </div>
+      </div>
+
+      <p class="q-title" id="page2Question">Click to get your gift</p>
+      <div class="btn-row" id="page2ClickRow">
+        <button class="btn" id="clickHereBtn">Click Here</button>
+      </div>
+      <div class="btn-row" id="page2AnswerRow" style="display:none;">
+        <button class="btn btn-soft" id="yesBtn2">Yesss!!!</button>
+        <button class="btn btn-outline" id="noBtn2">No :((</button>
+      </div>
+    </div>
+    <div class="lace"></div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 3 — SAD (kalau pilih No)
+  ============================================================ -->
+  <section class="page navy-bg" id="page3" aria-label="Halaman sedih">
+    <div class="page-inner" style="max-width:640px;">
+      <div class="sad-png-wrap">
+        <img class="sad-png sad-bounce" id="page3SadImg" src="" alt="Karakter sedih">
+        <span class="broken-heart">💔</span>
+      </div>
+      <div class="card card-sad torn-top">
+        <h2 class="sad-heading" id="page3SadText">Aku Sedih Deh :(</h2>
+        <p class="q-title" id="page3Question" style="color:var(--text);margin-top:14px;">Are you ready to receive the gift, my dear?</p>
+        <div class="btn-row">
+          <button class="btn" id="yesBtn3">Yesss!!!</button>
+        </div>
+      </div>
+    </div>
+    <div class="lace"></div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 4 — GIFT MENU
+  ============================================================ -->
+  <section class="page navy-bg" id="page4" aria-label="Menu hadiah">
+    <div class="deco twinkle" style="top:5%;left:6%;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#C9DDF5"><path d="M12 0l2.9 8.2L23 12l-8.1 2.9L12 24l-2.9-9.1L1 12l8.1-2.8z"/></svg></div>
+    <div class="deco twinkle" style="top:7%;right:7%;animation-delay:.4s;"><svg width="14" height="14" viewBox="0 0 24 24" fill="#C9DDF5"><path d="M12 0l2.9 8.2L23 12l-8.1 2.9L12 24l-2.9-9.1L1 12l8.1-2.8z"/></svg></div>
+
+    <p class="menu-title" id="page4Title">Click and open the gifts one by one...</p>
+    <div class="stamp-grid">
+      <button class="stamp" id="stampLetter" data-target="letter">
+        <span class="stamp-check">✓</span>
+        <svg class="stamp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="5" width="19" height="14" rx="1.6"/><path d="M3 6.5l9 6.5 9-6.5"/></svg>
+        <span class="stamp-label" id="stampLetterLabel">Surat</span>
+      </button>
+      <button class="stamp" id="stampPhoto" data-target="photos">
+        <span class="stamp-check">✓</span>
+        <svg class="stamp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"/><circle cx="12" cy="13.5" r="3.4"/></svg>
+        <span class="stamp-label" id="stampPhotoLabel">Foto</span>
+      </button>
+      <button class="stamp" id="stampGift" data-target="gift">
+        <span class="stamp-check">✓</span>
+        <svg class="stamp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="9" width="18" height="12" rx="1"/><path d="M3 13h18"/><path d="M12 9v12"/><path d="M12 9c-2-4-7-4-7-1 0 2 3 1 7 1zm0 0c2-4 7-4 7-1 0 2-3 1-7 1z"/></svg>
+        <span class="stamp-label" id="stampGiftLabel">Gift</span>
+      </button>
+      <button class="stamp" id="stampMusic" data-target="music">
+        <span class="stamp-check">✓</span>
+        <svg class="stamp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="15" r="5.5"/><circle cx="10" cy="15" r="1.4" fill="currentColor" stroke="none"/><path d="M15.3 15V5.5L21 4.2v8.4"/><circle cx="19.3" cy="13.5" r="1.9"/></svg>
+        <span class="stamp-label" id="stampMusicLabel">Music</span>
+      </button>
+    </div>
+
+    <div class="next-wrap" id="nextWrap">
+      <button class="btn" id="nextBtn4">Next</button>
+    </div>
+    <div class="lace"></div>
+  </section>
+
+  <!-- ============================================================
+       SUBPAGE — LETTER
+  ============================================================ -->
+  <section class="page navy-bg" id="letter" aria-label="Surat">
+    <div class="page-inner">
+      <div class="letter-stage">
+        <svg class="envelope-back" viewBox="0 0 400 140" fill="none" preserveAspectRatio="none">
+          <path d="M6 12 L200 100 L394 12 L394 130 L6 130 Z" fill="#0e2450"/>
+          <path d="M6 12 L200 100 L394 12" stroke="#1c3562" stroke-width="2" fill="none"/>
+          <path d="M6 12 L394 12 L200 78 Z" fill="#132a58"/>
+        </svg>
+
+        <svg class="letter-deco ld1 float-anim-slow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.2 5 5.6 5c1.9 0 3.4 1 4.4 2.4C11 6 12.5 5 14.4 5c3.4 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/></svg>
+        <svg class="letter-deco ld2 float-anim" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.2 5 5.6 5c1.9 0 3.4 1 4.4 2.4C11 6 12.5 5 14.4 5c3.4 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/></svg>
+        <svg class="letter-deco ld3 twinkle" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.6L21 9.2l-5 4.6L17.4 21 12 17.4 6.6 21 8 13.8l-5-4.6 6.4-.6z"/></svg>
+
+        <div class="card letter-card subpage-card torn-top torn-bottom">
+          <div class="wax-seal">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.2 5 5.6 5c1.9 0 3.4 1 4.4 2.4C11 6 12.5 5 14.4 5c3.4 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/></svg>
+          </div>
+          <div class="letter-top">
+            <span id="letterDate2">Untuk Sayangku</span>
+            <span id="letterDate">15 July 2026</span>
+          </div>
+          <h3 class="letter-title" id="letterTitle">Selamat ulang tahun, Sayangku</h3>
+          <div class="letter-divider"><span></span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.2 5 5.6 5c1.9 0 3.4 1 4.4 2.4C11 6 12.5 5 14.4 5c3.4 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/></svg><span></span></div>
+          <div class="letter-body" id="letterBody"></div>
+        </div>
+      </div>
+      <div class="btn-row back-btn">
+        <button class="btn btn-outline" data-back="page4" id="letterBack">Back</button>
+      </div>
+    </div>
+    <div class="lace"></div>
+  </section>
+
+  <!-- ============================================================
+       SUBPAGE — PHOTOS
+  ============================================================ -->
+  <section class="page navy-bg" id="photos" aria-label="Foto kenangan">
+    <div class="page-inner">
+      <div class="photos-scrap">
+
+        <!-- corner polaroids -->
+        <div class="photo-corner corner-tl" id="cornerTL">
+          <img id="photoTopLeftImg" src="" loading="lazy" decoding="async" alt="Foto 1">
+          <svg class="corner-sparkle" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>
+        </div>
+        <div class="photo-corner corner-bl" id="cornerBL">
+          <img id="photoBottomLeftImg" src="" loading="lazy" decoding="async" alt="Foto 2">
+        </div>
+        <div class="photo-corner corner-tr" id="cornerTR">
+          <img id="photoTopRightImg" src="" loading="lazy" decoding="async" alt="Foto 3">
+          <svg class="corner-sparkle" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg>
+        </div>
+        <div class="photo-corner corner-br" id="cornerBR">
+          <img id="photoBottomRightImg" src="" loading="lazy" decoding="async" alt="Foto 4">
+        </div>
+
+        <!-- hanging clip + strip -->
+        <div class="photos-hanger-wrap">
+          <div class="hanger-clip">
+            <svg class="hanger-bow left" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c-2-3-6-3-8-1-1.4 1.4-.6 3.6 1.2 3.8 2 .2 5-1 6.8-2.8zm0 0c2-3 6-3 8-1 1.4 1.4.6 3.6-1.2 3.8-2 .2-5-1-6.8-2.8z"/><circle cx="12" cy="12" r="1.6"/></svg>
+            <svg class="hanger-bow right" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c-2-3-6-3-8-1-1.4 1.4-.6 3.6 1.2 3.8 2 .2 5-1 6.8-2.8zm0 0c2-3 6-3 8-1 1.4 1.4.6 3.6-1.2 3.8-2 .2-5-1-6.8-2.8z"/><circle cx="12" cy="12" r="1.6"/></svg>
+          </div>
+          <div class="photos-strip">
+            <div class="strip-slot" id="stripSlot1"><img id="photoCenter1Img" src="" loading="lazy" decoding="async" alt="Foto tengah 1"></div>
+            <div class="strip-slot" id="stripSlot2"><img id="photoCenter2Img" src="" loading="lazy" decoding="async" alt="Foto tengah 2"></div>
+            <div class="strip-slot" id="stripSlot3"><img id="photoCenter3Img" src="" loading="lazy" decoding="async" alt="Foto tengah 3"></div>
+          </div>
+        </div>
+
+        <!-- decorations -->
+        <svg class="photos-deco deco-hearts-tl float-anim-slow" viewBox="0 0 40 24" fill="currentColor">
+          <path d="M11 22S3 17 3 11.5C3 8 5.5 6 8 6c1.5 0 2.8.8 3 2 .2-1.2 1.5-2 3-2 2.5 0 5 2 5 5.5C19 17 11 22 11 22z" opacity=".9"/>
+          <path d="M27 15s-5-3-5-6.3C22 6.5 23.6 5 25.3 5c1 0 1.8.5 2 1.2.2-.7 1-1.2 2-1.2C31 5 32.6 6.5 32.6 8.7 32.6 12 27 15 27 15z" opacity=".65"/>
+        </svg>
+        <svg class="photos-deco deco-hearts-tr float-anim" viewBox="0 0 40 24" fill="currentColor">
+          <path d="M29 22S37 17 37 11.5c0-3.5-2.5-5.5-5-5.5-1.5 0-2.8.8-3 2-.2-1.2-1.5-2-3-2-2.5 0-5 2-5 5.5C21 17 29 22 29 22z" opacity=".9"/>
+          <path d="M13 15s5-3 5-6.3C18 6.5 16.4 5 14.7 5c-1 0-1.8.5-2 1.2-.2-.7-1-1.2-2-1.2C9 5 7.4 6.5 7.4 8.7 7.4 12 13 15 13 15z" opacity=".65"/>
+        </svg>
+        <svg class="photos-deco deco-star-bl twinkle" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.6L21 9.2l-5 4.6L17.4 21 12 17.4 6.6 21 8 13.8l-5-4.6 6.4-.6z"/></svg>
+        <svg class="photos-deco deco-star-r twinkle" viewBox="0 0 24 24" fill="currentColor" style="animation-delay:.8s;"><path d="M12 2l2.6 6.6L21 9.2l-5 4.6L17.4 21 12 17.4 6.6 21 8 13.8l-5-4.6 6.4-.6z"/></svg>
+
+        <svg class="photos-deco deco-camera" viewBox="0 0 100 70" fill="none">
+          <rect x="8" y="20" width="84" height="44" rx="6" fill="currentColor" opacity=".95"/>
+          <rect x="30" y="8" width="26" height="14" rx="3" fill="currentColor" opacity=".95"/>
+          <circle cx="50" cy="42" r="17" fill="#0a1a3a"/>
+          <circle cx="50" cy="42" r="11" fill="currentColor" opacity=".5"/>
+          <circle cx="78" cy="28" r="4" fill="#0a1a3a"/>
+        </svg>
+        <svg class="photos-deco deco-camera-bow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c-2-3-6-3-8-1-1.4 1.4-.6 3.6 1.2 3.8 2 .2 5-1 6.8-2.8zm0 0c2-3 6-3 8-1 1.4 1.4.6 3.6-1.2 3.8-2 .2-5-1-6.8-2.8z"/><circle cx="12" cy="12" r="1.6"/></svg>
+
+        <svg class="photos-deco deco-flowers" viewBox="0 0 100 80" fill="none">
+          <g opacity=".95">
+            <circle cx="60" cy="26" r="16" fill="#9fc0ea"/>
+            <circle cx="38" cy="40" r="14" fill="#c9ddf5"/>
+            <circle cx="66" cy="50" r="13" fill="#7fa8de"/>
+            <circle cx="42" cy="60" r="11" fill="#c9ddf5"/>
+            <circle cx="52" cy="42" r="8" fill="#f5f3ea"/>
+          </g>
+        </svg>
+
+        <div class="deco-bubble">I love you</div>
+      </div>
+
+      <div class="photos-back-row">
+        <button class="btn" data-back="page4">Back</button>
+      </div>
+    </div>
+    <div class="lace"></div>
+  </section>
+
+  <!-- ============================================================
+       SUBPAGE — GIFT
+  ============================================================ -->
+  <section class="page navy-bg" id="gift" aria-label="Hadiah">
+    <div class="page-inner">
+      <div class="card gift-card subpage-card">
+        <h3 class="gift-title" id="giftTitle">Birthday Gift</h3>
+        <div class="gift-img-wrap">
+          <span class="sparkle" style="top:-4%;left:-6%;">✨</span>
+          <span class="sparkle" style="bottom:6%;right:-8%;animation-delay:.6s;">✨</span>
+          <img class="gift-img" id="giftImg" src="" alt="Hadiah">
+        </div>
+      </div>
+      <div class="btn-row back-btn">
+        <button class="btn btn-outline" data-back="page4">Back</button>
+      </div>
+    </div>
+    <div class="lace"></div>
+  </section>
+
+  <!-- ============================================================
+       SUBPAGE — MUSIC
+  ============================================================ -->
+  <section class="page navy-bg" id="music" aria-label="Musik">
+    <div class="music-stage">
+      <div class="music-scrap">
+
+        <div class="music-top-row">
+          <button class="music-next-btn" data-back="page4">Next</button>
+        </div>
+
+        <!-- VINYL, half cropped on the left edge -->
+        <div class="music-vinyl-zone">
+          <div class="vinyl-wrap">
+            <div class="vinyl" id="vinylEl">
+              <div class="vinyl-center">
+                <svg class="vinyl-center-heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.2 5 5.6 5c1.9 0 3.4 1 4.4 2.4C11 6 12.5 5 14.4 5c3.4 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/></svg>
+              </div>
+              <div class="vinyl-hole"></div>
+            </div>
+            <svg class="vinyl-flower f1" viewBox="0 0 60 60" fill="none"><g opacity=".9"><circle cx="30" cy="18" r="11" fill="#9fc0ea"/><circle cx="16" cy="30" r="10" fill="#c9ddf5"/><circle cx="30" cy="42" r="10" fill="#9fc0ea"/><circle cx="44" cy="28" r="10" fill="#c9ddf5"/><circle cx="30" cy="30" r="7" fill="#f5f3ea"/></g></svg>
+            <svg class="vinyl-flower f2" viewBox="0 0 60 60" fill="none"><g opacity=".85"><circle cx="24" cy="20" r="9" fill="#c9ddf5"/><circle cx="14" cy="32" r="8" fill="#9fc0ea"/><circle cx="28" cy="38" r="8" fill="#c9ddf5"/><circle cx="24" cy="26" r="5" fill="#f5f3ea"/></g></svg>
+          </div>
+        </div>
+
+        <!-- little "love" definition scrap -->
+        <div class="love-tag">
+          <span class="word">love</span>
+          <span class="def">1. an intense affection for another person based on personal or family ties. 2. the deep tenderness, affection and concern felt for a person, or one's relationship.</span>
+        </div>
+
+        <!-- polaroid photo, right side -->
+        <div class="music-photo-zone">
+          <img id="musicPhotoImg" src="" loading="lazy" decoding="async" alt="Foto musik">
+          <svg class="music-photo-flower pf1" viewBox="0 0 60 60" fill="none"><g><circle cx="30" cy="18" r="10" fill="#9fc0ea"/><circle cx="18" cy="30" r="9" fill="#c9ddf5"/><circle cx="30" cy="30" r="6" fill="#f5f3ea"/></g></svg>
+          <svg class="music-photo-flower pf2" viewBox="0 0 60 60" fill="none"><g><circle cx="26" cy="22" r="9" fill="#c9ddf5"/><circle cx="16" cy="32" r="8" fill="#9fc0ea"/><circle cx="24" cy="24" r="5" fill="#f5f3ea"/></g></svg>
+        </div>
+
+        <!-- floating notes / kiss / star -->
+        <svg class="music-deco note1" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <svg class="music-deco note2" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <svg class="music-deco kiss" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 8c2-3 6-3 8 0 2-3 6-3 8 0-2 4-8 9-8 9S6 12 4 8z"/></svg>
+        <svg class="music-deco star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.6L21 9.2l-5 4.6L17.4 21 12 17.4 6.6 21 8 13.8l-5-4.6 6.4-.6z"/></svg>
+
+        <!-- title -->
+        <div class="music-title-zone">
+          <p class="about-title font-display">About You</p>
+        </div>
+
+        <!-- waveform player -->
+        <div class="music-player-zone">
+          <button class="player-play-btn" id="playBtn" aria-label="Play/Pause">▶</button>
+          <div class="waveform" id="eqEl">
+            <span style="--h:8px"></span><span style="--h:14px"></span><span style="--h:6px"></span><span style="--h:18px"></span>
+            <span style="--h:10px"></span><span style="--h:20px"></span><span style="--h:7px"></span><span style="--h:16px"></span>
+            <span style="--h:12px"></span><span style="--h:9px"></span><span style="--h:19px"></span><span style="--h:6px"></span>
+            <span style="--h:15px"></span><span style="--h:11px"></span><span style="--h:8px"></span><span style="--h:17px"></span>
+            <span style="--h:13px"></span><span style="--h:6px"></span><span style="--h:20px"></span><span style="--h:9px"></span>
+          </div>
+        </div>
+
+        <p class="song-title" id="songTitle">Our Song</p>
+        <p class="song-artist" id="songArtist">For You</p>
+        <button class="btn btn-outline" id="stopBtn" style="display:none;">Stop</button>
+        <div class="music-embed-wrap" id="musicEmbedWrap"></div>
+        <p class="music-note" id="musicNote"></p>
+        <audio class="hidden-audio" id="audioEl" preload="none"></audio>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PAGE 5 — FINAL
+  ============================================================ -->
+  <section class="page navy-bg" id="page5" aria-label="Penutup">
+    <div class="deco float-anim-slow plane-anim" style="top:8%;left:6%;--r:-8deg;">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none"><path d="M2 12L21 3L14 21L11 13L2 12Z" fill="#F5F3EA" stroke="#C9DDF5" stroke-width="1"/></svg>
+    </div>
+    <div class="deco float-anim" style="top:10%;right:8%;"><svg width="18" height="18" viewBox="0 0 24 24" fill="#9FC0EA"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.9 2 6 5.4 5.1 7.6 4.5 9.8 5.5 12 8c2.2-2.5 4.4-3.5 6.6-2.9C22 6 23.2 9.9 21.3 12.9 18.7 16.65 12 21 12 21z"/></svg></div>
+    <div class="deco twinkle" style="top:16%;left:14%;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#C9DDF5"><path d="M12 0l2.9 8.2L23 12l-8.1 2.9L12 24l-2.9-9.1L1 12l8.1-2.8z"/></svg></div>
+    <div class="deco twinkle" style="bottom:20%;right:12%;animation-delay:.5s;"><svg width="14" height="14" viewBox="0 0 24 24" fill="#C9DDF5"><path d="M12 0l2.9 8.2L23 12l-8.1 2.9L12 24l-2.9-9.1L1 12l8.1-2.8z"/></svg></div>
+    <div class="deco float-anim" style="bottom:14%;left:10%;"><svg width="20" height="20" viewBox="0 0 24 24" fill="#9FC0EA"><path d="M12 21s-6.7-4.35-9.3-8.1C.8 9.9 2 6 5.4 5.1 7.6 4.5 9.8 5.5 12 8c2.2-2.5 4.4-3.5 6.6-2.9C22 6 23.2 9.9 21.3 12.9 18.7 16.65 12 21 12 21z"/></svg></div>
+
+    <h1 class="heading-xl final-title" id="p5Title" style="text-align:center;">Happy<br>Birthday</h1>
+    <p class="subtitle-script final-sub" id="p5Subtitle">My Birthday My Love My Baby</p>
+    <div class="lace"></div>
+  </section>
+
+</main>
+
+<script>
+/* ==========================================================
+   CONFIG — ganti semua teks / URL foto / musik di sini saja
+========================================================== */
+const CONFIG = {
+    birthdayName: "Birthday Boy",
+    senderName: "Your Name",
+
+    page1: {
+        title: "Happy Birthday",
+        subtitle: "Special gift for special person",
+        buttonText: "Open The Gift",
+        envelopeText: "Birthday Boy"
+    },
+
+    page2: {
+        question: "Are you ready to receive the gift, my dear?",
+        clickButton: "Click Here",
+        yesButton: "Yesss!!!",
+        noButton: "No :(( "
+    },
+
+    page3: {
+        sadText: "Aku Sedih Deh :(",
+        question: "Are you ready to receive the gift, my dear?",
+        buttonText: "Yesss!!!"
+    },
+
+    page4: {
+        title: "Click and open the gifts one by one...",
+        items: { letter: "Surat", photo: "Foto", gift: "Gift", music: "Music" },
+        nextButton: "Next"
+    },
+
+    page5: {
+        title: "Happy Birthday",
+        subtitle: "My Birthday My Love My Baby"
+    },
+
+    letter: {
+        date: "15 July 2026",
+        to: "Untuk Sayangku",
+        title: "Selamat ulang tahun, Sayangku",
+        paragraphs: [
+            "Tulis pesan ulang tahun pertama di sini.",
+            "Tulis pesan ulang tahun kedua di sini.",
+            "Tulis pesan ulang tahun ketiga di sini."
+        ],
+        closing: "Happy birthday, my love.",
+        signature: "I love you more than words can say."
+    },
+
+    ui: {
+        backButton: "Back",
+        giftPageTitle: "Birthday Gift",
+        musicPlay: "▶ Play",
+        musicStop: "■ Stop"
+    },
+
+    images: {
+        page1LovePhoto: "URL_FOTO_LOVE",
+        page2Left: "URL_FOTO_KIRI",
+        page2Right: "URL_FOTO_KANAN",
+
+        page3Sad: "URL_PNG_SEDih",
+
+        photoLeft: "URL_FOTO_KIRI",
+        photoRight: "URL_FOTO_KANAN",
+        photoTopLeft: "URL_FOTO_KIRI",
+        photoBottomLeft: "URL_FOTO_KIRI_2",
+        photoTopRight: "URL_FOTO_KANAN",
+        photoBottomRight: "URL_FOTO_KANAN_2",
+
+        photoCenter1: "URL_FOTO_TENGAH_1",
+        photoCenter2: "URL_FOTO_TENGAH_2",
+        photoCenter3: "URL_FOTO_TENGAH_3",
+
+        gift: "URL_PNG_GIFT",
+
+        musicPhoto: "URL_FOTO_MUSIC",
+
+        page5BackgroundLeft: "URL_ASSET",
+        page5BackgroundRight: "URL_ASSET"
+    },
+
+    music: {
+        type: "audio",
+        url: "URL_MUSIC",
+        title: "Our Song",
+        artist: "For You"
+    },
+
+    effects: {
+        enableMusic: true,
+        enableParticles: true,
+        enableHeartAnimation: true,
+        enablePageTransition: true
+    }
+};
+
+/* ==========================================================
+   STATE
+========================================================== */
+let openedGifts = { letter: false, photo: false, gift: false, music: false };
+let page2Animated = false;
+let letterTyped = false;
+let photosShown = false;
+const TRANSITION_MS = 750;
+
+/* Fallback placeholder (dipakai kalau gambar di CONFIG gagal dimuat) */
+const PLACEHOLDER_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='100%25' height='100%25' fill='%23C9DDF5'/%3E%3Ctext x='50%25' y='52%25' font-family='sans-serif' font-size='18' fill='%2313284B' text-anchor='middle'%3EPhoto%3C/text%3E%3C/svg%3E";
+
+function setImgSafe(el, url){
+  if(!el) return;
+  if(!url || url.startsWith("URL_")){
+    el.src = PLACEHOLDER_IMG;
+    el.classList.add("img-fallback");
+    return;
+  }
+  el.src = url;
+  el.onerror = function(){
+    this.onerror = null;
+    this.src = PLACEHOLDER_IMG;
+    this.classList.add("img-fallback");
+  };
+}
+
+/* ==========================================================
+   PAGE NAVIGATION
+========================================================== */
+function showPage(id){
+  const next = document.getElementById(id);
+  if(!next) return;
+  const current = document.querySelector(".page.active");
+  if(current === next) return;
+
+  /* Tampilkan next di layout dulu (masih transparan/offset)
+     lalu paksa reflow supaya transisi fade-in benar-benar animasi. */
+  next.style.display = "flex";
+  next.classList.remove("active");
+  void next.offsetWidth;
+
+  requestAnimationFrame(()=>{
+    next.classList.add("active");
+  });
+
+  if(current){
+    current.classList.remove("active");
+    setTimeout(()=>{
+      current.style.display = "none";
+    }, TRANSITION_MS);
+  }
+
+  window.scrollTo({top:0, behavior:"smooth"});
+
+  if(id === "letter") triggerLetterTyping();
+  if(id === "photos") triggerPhotosReveal();
+  if(id === "music"){ /* siap dimainkan saat user tekan Play */ }
+}
+
+/* ==========================================================
+   APPLY CONFIG TO DOM (teks & gambar)
+========================================================== */
+function applyConfig(){
+  document.title = CONFIG.page1.title + " — " + CONFIG.birthdayName;
+
+  document.getElementById("p1Title").innerHTML = CONFIG.page1.title.replace(" ", "<br>");
+  document.getElementById("p1Subtitle").textContent = CONFIG.page1.subtitle;
+  document.getElementById("openGiftBtn").textContent = CONFIG.page1.buttonText;
+  document.getElementById("p1EnvelopeText").textContent = CONFIG.page1.envelopeText;
+  setImgSafe(document.getElementById("page1LovePhotoImg"), CONFIG.images.page1LovePhoto);
+
+  document.getElementById("clickHereBtn").textContent = CONFIG.page2.clickButton;
+  document.getElementById("yesBtn2").textContent = CONFIG.page2.yesButton;
+  document.getElementById("noBtn2").textContent = CONFIG.page2.noButton;
+  setImgSafe(document.getElementById("road2LeftImg"), CONFIG.images.page2Left);
+  setImgSafe(document.getElementById("road2RightImg"), CONFIG.images.page2Right);
+
+  document.getElementById("page3SadText").textContent = CONFIG.page3.sadText;
+  document.getElementById("page3Question").textContent = CONFIG.page3.question;
+  document.getElementById("yesBtn3").textContent = CONFIG.page3.buttonText;
+  setImgSafe(document.getElementById("page3SadImg"), CONFIG.images.page3Sad);
+
+  document.getElementById("page4Title").textContent = CONFIG.page4.title;
+  document.getElementById("stampLetterLabel").textContent = CONFIG.page4.items.letter;
+  document.getElementById("stampPhotoLabel").textContent = CONFIG.page4.items.photo;
+  document.getElementById("stampGiftLabel").textContent = CONFIG.page4.items.gift;
+  document.getElementById("stampMusicLabel").textContent = CONFIG.page4.items.music;
+  document.getElementById("nextBtn4").textContent = CONFIG.page4.nextButton;
+
+  document.getElementById("letterDate").textContent = CONFIG.letter.date;
+  document.getElementById("letterDate2").textContent = CONFIG.letter.to || "Untuk Sayangku";
+  document.getElementById("letterTitle").textContent = CONFIG.letter.title;
+  document.querySelectorAll('[data-back]').forEach(b=>{ if(!b.id) b.textContent = CONFIG.ui.backButton; });
+  document.getElementById("letterBack").textContent = CONFIG.ui.backButton;
+
+  setImgSafe(document.getElementById("photoTopLeftImg"), CONFIG.images.photoTopLeft || CONFIG.images.photoLeft);
+  setImgSafe(document.getElementById("photoBottomLeftImg"), CONFIG.images.photoBottomLeft);
+  setImgSafe(document.getElementById("photoTopRightImg"), CONFIG.images.photoTopRight || CONFIG.images.photoRight);
+  setImgSafe(document.getElementById("photoBottomRightImg"), CONFIG.images.photoBottomRight);
+  setImgSafe(document.getElementById("photoCenter1Img"), CONFIG.images.photoCenter1);
+  setImgSafe(document.getElementById("photoCenter2Img"), CONFIG.images.photoCenter2);
+  setImgSafe(document.getElementById("photoCenter3Img"), CONFIG.images.photoCenter3);
+
+  document.getElementById("giftTitle").textContent = CONFIG.ui.giftPageTitle;
+  setImgSafe(document.getElementById("giftImg"), CONFIG.images.gift);
+
+  setImgSafe(document.getElementById("musicPhotoImg"), CONFIG.images.musicPhoto);
+  document.getElementById("songTitle").textContent = CONFIG.music.title;
+  document.getElementById("songArtist").textContent = CONFIG.music.artist;
+  document.getElementById("stopBtn").textContent = CONFIG.ui.musicStop;
+
+  document.getElementById("p5Title").innerHTML = CONFIG.page5.title.replace(" ", "<br>");
+  document.getElementById("p5Subtitle").textContent = CONFIG.page5.subtitle;
+}
+
+/* ==========================================================
+   PAGE 2 — ROAD PATH ANIMATION (SVG based, responsive)
+========================================================== */
+function animatePage2(){
+  if(page2Animated) return;
+  page2Animated = true;
+
+  const svgPath = document.getElementById("roadPath2");
+  const leftPhoto = document.getElementById("road2Left");
+  const rightPhoto = document.getElementById("road2Right");
+  const wrap = document.getElementById("roadWrap2");
+
+  const clone = leftPhoto.cloneNode(true);
+  clone.id = "road2Moving";
+  clone.classList.add("moving");
+  clone.style.left = leftPhoto.style.left;
+  clone.style.top = leftPhoto.style.top;
+  wrap.appendChild(clone);
+  leftPhoto.style.opacity = "0";
+
+  const totalLength = svgPath.getTotalLength();
+  const VB_W = 700, VB_H = 230;
+  const duration = 3200;
+  let startTime = null;
+
+  function ease(t){ return t<0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+
+  function frame(ts){
+    if(!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    const et = ease(t);
+    const pt = svgPath.getPointAtLength(et * totalLength);
+    const leftPct = (pt.x / VB_W) * 100;
+    const topPct = (pt.y / VB_H) * 100;
+    const wiggle = Math.sin(t * Math.PI * 5) * 7 * (1 - t*0.4);
+    clone.style.left = leftPct + "%";
+    clone.style.top = topPct + "%";
+    clone.style.transform = `translate(-50%,-50%) rotate(${wiggle}deg)`;
+
+    if(t < 1){
+      requestAnimationFrame(frame);
+    } else {
+      clone.remove();
+      rightPhoto.style.transform = "translate(-50%,-50%) scale(1.06)";
+      setTimeout(()=>{ rightPhoto.style.transform = "translate(-50%,-50%) scale(1)"; }, 260);
+      revealPage2Answers();
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+function revealPage2Answers(){
+  document.getElementById("page2Question").textContent = CONFIG.page2.question;
+  document.getElementById("page2ClickRow").style.display = "none";
+  const row = document.getElementById("page2AnswerRow");
+  row.style.display = "flex";
+  row.style.opacity = "0";
+  requestAnimationFrame(()=>{
+    row.style.transition = "opacity .5s ease";
+    row.style.opacity = "1";
+  });
+}
+
+/* ==========================================================
+   LETTER TYPING ANIMATION
+========================================================== */
+function triggerLetterTyping(){
+  const body = document.getElementById("letterBody");
+  body.innerHTML = "";
+  letterTyped = false;
+
+  const paragraphs = CONFIG.letter.paragraphs.slice();
+  const closingLine = CONFIG.letter.closing;
+  const signatureLine = CONFIG.letter.signature;
+
+  let pIndex = 0;
+  let charIndex = 0;
+  const speed = 16;
+  const paraPause = 420;
+
+  function typeNextParagraph(){
+    if(pIndex >= paragraphs.length){
+      finishLetter();
+      return;
+    }
+    const p = document.createElement("p");
+    const cursor = document.createElement("span");
+    cursor.className = "caret";
+    body.appendChild(p);
+    body.appendChild(cursor);
+    charIndex = 0;
+    const text = paragraphs[pIndex];
+
+    function typeChar(){
+      if(charIndex <= text.length){
+        p.textContent = text.slice(0, charIndex);
+        charIndex++;
+        setTimeout(typeChar, speed);
+      } else {
+        cursor.remove();
+        pIndex++;
+        setTimeout(typeNextParagraph, paraPause);
+      }
+    }
+    typeChar();
+  }
+
+  function finishLetter(){
+    const closing = document.createElement("p");
+    closing.className = "letter-closing";
+    closing.textContent = closingLine;
+    closing.style.opacity = "0";
+    closing.style.transition = "opacity .6s ease";
+    body.appendChild(closing);
+
+    const sigRow = document.createElement("div");
+    sigRow.className = "letter-signature-row";
+    sigRow.style.opacity = "0";
+    sigRow.style.transition = "opacity .6s ease";
+    const sig = document.createElement("p");
+    sig.className = "letter-signature";
+    sig.textContent = signatureLine;
+    const sigHeart = document.createElementNS("http://www.w3.org/2000/svg","svg");
+    sigHeart.setAttribute("viewBox","0 0 24 24");
+    sigHeart.setAttribute("fill","currentColor");
+    sigHeart.innerHTML = '<path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.2 5 5.6 5c1.9 0 3.4 1 4.4 2.4C11 6 12.5 5 14.4 5c3.4 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/>';
+    sigRow.appendChild(sig);
+    sigRow.appendChild(sigHeart);
+    body.appendChild(sigRow);
+
+    requestAnimationFrame(()=>{
+      setTimeout(()=>{ closing.style.opacity = "1"; }, 100);
+      setTimeout(()=>{ sigRow.style.opacity = "1"; }, 500);
+    });
+    letterTyped = true;
+  }
+
+  typeNextParagraph();
+}
+
+/* ==========================================================
+   PHOTOS REVEAL ANIMATION
+========================================================== */
+function triggerPhotosReveal(){
+  const ids = ["cornerTL","cornerBL","cornerTR","cornerBR","stripSlot1","stripSlot2","stripSlot3"];
+  ids.forEach(id=>document.getElementById(id).classList.remove("show"));
+
+  setTimeout(()=>document.getElementById("cornerTL").classList.add("show"), 150);
+  setTimeout(()=>document.getElementById("cornerTR").classList.add("show"), 300);
+  setTimeout(()=>document.getElementById("cornerBL").classList.add("show"), 450);
+  setTimeout(()=>document.getElementById("cornerBR").classList.add("show"), 600);
+  setTimeout(()=>document.getElementById("stripSlot1").classList.add("show"), 800);
+  setTimeout(()=>document.getElementById("stripSlot2").classList.add("show"), 1050);
+  setTimeout(()=>document.getElementById("stripSlot3").classList.add("show"), 1300);
+}
+
+/* ==========================================================
+   MUSIC PLAYER (auto-detect: direct audio / YouTube / Spotify)
+========================================================== */
+let musicKind = "none";
+let ytIframe = null;
+let spotifyReady = false;
+
+function detectMusicKind(url){
+  if(!url || url.startsWith("URL_")) return "none";
+  if(/youtu\.?be/i.test(url)) return "youtube";
+  if(/open\.spotify\.com/i.test(url)) return "spotify";
+  return "audio";
+}
+
+function getYouTubeId(url){
+  const m = url.match(/(?:youtu\.be\/|youtube\.com.*(?:\?|&)v=|youtube\.com\/embed\/)([\w-]{6,})/);
+  return m ? m[1] : null;
+}
+
+function initMusicPlayer(){
+  musicKind = detectMusicKind(CONFIG.music.url);
+  const note = document.getElementById("musicNote");
+  const audioEl = document.getElementById("audioEl");
+  const embedWrap = document.getElementById("musicEmbedWrap");
+
+  if(musicKind === "audio"){
+    audioEl.src = CONFIG.music.url;
+    note.textContent = "";
+  } else if(musicKind === "youtube"){
+    note.textContent = "Diputar lewat YouTube.";
+  } else if(musicKind === "spotify"){
+    note.textContent = "Diputar lewat Spotify.";
+    const trackMatch = CONFIG.music.url.match(/track\/([a-zA-Z0-9]+)/);
+    if(trackMatch){
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://open.spotify.com/embed/track/${trackMatch[1]}`;
+      iframe.height = "152";
+      iframe.allow = "encrypted-media";
+      iframe.loading = "lazy";
+      embedWrap.appendChild(iframe);
+      spotifyReady = true;
+    }
+  } else {
+    note.textContent = "Tambahkan URL musik di CONFIG.music.url untuk mengaktifkan pemutar.";
+  }
+}
+
+function playMusic(){
+  const vinyl = document.getElementById("vinylEl");
+  const eq = document.getElementById("eqEl");
+  const audioEl = document.getElementById("audioEl");
+  const embedWrap = document.getElementById("musicEmbedWrap");
+  const note = document.getElementById("musicNote");
+
+  if(musicKind === "audio"){
+    audioEl.play().catch(()=>{ note.textContent = "Musik tidak bisa diputar otomatis di browser ini."; });
+    vinyl.classList.add("spinning");
+    eq.classList.add("playing");
+  } else if(musicKind === "youtube"){
+    const id = getYouTubeId(CONFIG.music.url);
+    if(id){
+      embedWrap.innerHTML = "";
+      ytIframe = document.createElement("iframe");
+      ytIframe.width = "1"; ytIframe.height = "1";
+      ytIframe.style.position = "absolute";
+      ytIframe.style.opacity = "0";
+      ytIframe.style.pointerEvents = "none";
+      ytIframe.allow = "autoplay";
+      ytIframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&playsinline=1`;
+      embedWrap.appendChild(ytIframe);
+      vinyl.classList.add("spinning");
+      eq.classList.add("playing");
+    } else {
+      note.textContent = "URL YouTube tidak valid.";
+    }
+  } else if(musicKind === "spotify"){
+    vinyl.classList.add("spinning");
+    eq.classList.add("playing");
+    note.textContent = "Tekan tombol play pada player Spotify di bawah.";
+  } else {
+    note.textContent = "Belum ada musik yang diset di CONFIG.";
+  }
+}
+
+function stopMusic(){
+  const vinyl = document.getElementById("vinylEl");
+  const eq = document.getElementById("eqEl");
+  const audioEl = document.getElementById("audioEl");
+  const embedWrap = document.getElementById("musicEmbedWrap");
+
+  vinyl.classList.remove("spinning");
+  eq.classList.remove("playing");
+  isPlayingMusic = false;
+  const btn = document.getElementById("playBtn");
+  if(btn) btn.textContent = "▶";
+
+  if(musicKind === "audio"){
+    audioEl.pause();
+  } else if(musicKind === "youtube"){
+    if(ytIframe){ embedWrap.innerHTML = ""; ytIframe = null; }
+  }
+}
+
+let isPlayingMusic = false;
+function toggleMusic(){
+  const btn = document.getElementById("playBtn");
+  isPlayingMusic = !isPlayingMusic;
+  if(isPlayingMusic){
+    playMusic();
+    btn.textContent = "❚❚";
+  } else {
+    stopMusic();
+    btn.textContent = "▶";
+  }
+}
+
+/* ==========================================================
+   GIFT MENU STATE (openedGifts)
+========================================================== */
+function markOpened(key, stampId){
+  openedGifts[key] = true;
+  document.getElementById(stampId).classList.add("opened");
+  checkAllOpened();
+}
+
+function checkAllOpened(){
+  const allOpen = Object.values(openedGifts).every(v => v === true);
+  const wrap = document.getElementById("nextWrap");
+  if(allOpen) wrap.classList.add("show");
+}
+
+/* ==========================================================
+   EVENT BINDINGS
+========================================================== */
+function initEvents(){
+  document.getElementById("openGiftBtn").addEventListener("click", ()=>showPage("page2"));
+
+  document.getElementById("clickHereBtn").addEventListener("click", animatePage2);
+
+  document.getElementById("yesBtn2").addEventListener("click", ()=>showPage("page4"));
+  document.getElementById("noBtn2").addEventListener("click", ()=>showPage("page3"));
+  document.getElementById("yesBtn3").addEventListener("click", ()=>showPage("page4"));
+
+  document.getElementById("stampLetter").addEventListener("click", ()=>{ markOpened("letter","stampLetter"); showPage("letter"); });
+  document.getElementById("stampPhoto").addEventListener("click", ()=>{ markOpened("photo","stampPhoto"); showPage("photos"); });
+  document.getElementById("stampGift").addEventListener("click", ()=>{ markOpened("gift","stampGift"); showPage("gift"); });
+  document.getElementById("stampMusic").addEventListener("click", ()=>{ markOpened("music","stampMusic"); showPage("music"); });
+
+  document.getElementById("nextBtn4").addEventListener("click", ()=>showPage("page5"));
+
+  document.querySelectorAll("[data-back]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      stopMusic();
+      showPage(btn.getAttribute("data-back"));
+    });
+  });
+
+  document.getElementById("playBtn").addEventListener("click", toggleMusic);
+}
+
+/* ==========================================================
+   INITIALIZE
+========================================================== */
+document.addEventListener("DOMContentLoaded", ()=>{
+  applyConfig();
+  initEvents();
+  initMusicPlayer();
+});
+</script>
+
+</body>
+</html>
